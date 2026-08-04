@@ -1,2 +1,119 @@
 @import "tailwindcss";
-@plugin "daisyui";
+
+:root {
+  color-scheme: light;
+
+  /* Brand Colors */
+  --primary: #5b3df5;
+  --primary-hover: #4c2ef0;
+  --secondary: #00c2ff;
+  --accent: #7c3aed;
+
+  /* Status Colors */
+  --success: #00c853;
+  --warning: #ffb800;
+  --error: #ff4d6d;
+  --info: #3b82f6;
+
+  /* Background */
+  --background: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #eef2ff;
+
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  /* Border */
+  --border: #e5e7eb;
+
+  /* Radius */
+  --radius: 12px;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Brand Colors */
+  --primary: #7c61ff;
+  --primary-hover: #6b54e8;
+  --secondary: #00d9ff;
+  --accent: #8b5cf6;
+
+  /* Status Colors */
+  --success: #10b981;
+  --warning: #fbbf24;
+  --error: #ef4444;
+  --info: #60a5fa;
+
+  /* Background */
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  /* Border */
+  --border: #334155;
+}
+
+/* Base Styles */
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+
+  color: var(--text-primary);
+
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom Utility Classes */
+
+.bg-background {
+  background-color: var(--background);
+}
+
+.bg-surface {
+  background-color: var(--surface);
+}
+
+.bg-surface-2 {
+  background-color: var(--surface-2);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.border-custom {
+  border-color: var(--border);
+}
+
+/* Smooth Transition */
+
+* {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
