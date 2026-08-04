@@ -4,7 +4,7 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home/Home/Home";
 import error from "../pages/Error/Error";
 import Error from "../pages/Error/Error";
-import { path } from "framer-motion/client";
+import { h1, path } from "framer-motion/client";
 import Register from "../pages/Register/Register";
 import login from "../pages/Login/login";
 import DashboardLayout from '../layouts/DashboardLayout'
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
         path: 'register',
         Component: Register
       },
+      {
+        path: 'contact',
+        element: <h1>Contact</h1>
+      }
     ],
   },
 
