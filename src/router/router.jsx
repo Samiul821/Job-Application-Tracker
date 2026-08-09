@@ -10,6 +10,8 @@ import login from "../pages/Login/login";
 import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from "../pages/Dashboard/Dashboard/Dashboard";
 import profile from "../pages/Profile/profile";
+import AuthLayout from "../layouts/AuthLayout";
+import Login from "../pages/Authentication/Login/Login";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,22 @@ const router = createBrowserRouter([
       }
     ],
   },
+
+  // Auth
+ {
+  path: "/",
+  Component: AuthLayout,
+  children: [
+    {
+      path: "/login",
+      Component: Login
+    },
+    {
+      path: '/register',
+      Component: Register
+    }
+  ]
+ },
 
   // Dashboard
   {
