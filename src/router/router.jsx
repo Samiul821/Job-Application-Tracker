@@ -5,13 +5,12 @@ import Home from "../pages/Home/Home/Home";
 import error from "../pages/Error/Error";
 import Error from "../pages/Error/Error";
 import { h1, path } from "framer-motion/client";
-import Register from "../pages/Register/Register";
-import login from "../pages/Login/login";
 import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from "../pages/Dashboard/Dashboard/Dashboard";
 import profile from "../pages/Profile/profile";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/Authentication/Login/Login";
+import Register from "../pages/Authentication/Register/Register";
 
 const router = createBrowserRouter([
   {
@@ -22,14 +21,6 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: Home,
-      },
-      {
-        path: 'login',
-        Component: login
-      },
-      {
-        path: 'register',
-        Component: Register
       },
       {
         path: 'contact',

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { NavLink } from "react-router-dom";
 import {
   HiOutlineSearch,
   HiOutlineMenu,
@@ -28,26 +28,26 @@ const Navbar = () => {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-16 flex items-center justify-between">
-
             {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-              }}
-              className="flex items-center gap-3 cursor-pointer"
-            >
+            <NavLink to="/">
               <motion.div
-                animate={{
-                  rotate: [0, 8, -8, 0],
-                }}
+                whileHover={{ scale: 1.05 }}
                 transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
+                  type: "spring",
+                  stiffness: 300,
                 }}
-                className="
+                className="flex items-center gap-3 cursor-pointer"
+              >
+                <motion.div
+                  animate={{
+                    rotate: [0, 8, -8, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="
                   relative
                   w-11
                   h-11
@@ -64,18 +64,15 @@ const Navbar = () => {
                   shadow-indigo-300/40
                   overflow-hidden
                 "
-              >
-                <div className="absolute inset-0 bg-white/20 blur-md" />
+                >
+                  <div className="absolute inset-0 bg-white/20 blur-md" />
 
-                <MdAutoAwesome
-                  size={24}
-                  className="relative z-10"
-                />
-              </motion.div>
+                  <MdAutoAwesome size={24} className="relative z-10" />
+                </motion.div>
 
-              <div className="leading-none">
-                <h1
-                  className="
+                <div className="leading-none">
+                  <h1
+                    className="
                     text-xl
                     font-extrabold
                     tracking-tight
@@ -86,23 +83,23 @@ const Navbar = () => {
                     bg-clip-text
                     text-transparent
                   "
-                >
-                  JobTrack
-                </h1>
+                  >
+                    JobTrack
+                  </h1>
 
-                <span
-                  className="
+                  <span
+                    className="
                     text-[11px]
                     text-gray-400
                     font-semibold
                     tracking-[4px]
                   "
-                >
-                  PRO
-                </span>
-              </div>
-            </motion.div>
-
+                  >
+                    PRO
+                  </span>
+                </div>
+              </motion.div>
+            </NavLink>
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-8">
@@ -135,14 +132,13 @@ const Navbar = () => {
               ))}
             </div>
 
-
             {/* Right Side */}
             <div className="hidden md:flex items-center gap-3">
-
               {/* Search */}
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 className="
+                  cursor-pointer
                   w-10
                   h-10
                   rounded-full
@@ -157,7 +153,6 @@ const Navbar = () => {
               >
                 <HiOutlineSearch size={20} />
               </motion.button>
-
 
               {/* Theme */}
               <motion.button
@@ -180,17 +175,19 @@ const Navbar = () => {
                 <HiOutlineMoon size={20} />
               </motion.button>
 
-
               {/* Login */}
-              <motion.button
-                whileHover={{
-                  scale: 1.05,
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.95,
-                }}
-                className="
+              <NavLink to="/login">
+                {" "}
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    y: -2,
+                  }}
+                  whileTap={{
+                    scale: 0.95,
+                  }}
+                  className="
+                  cursor-pointer
                   relative
                   overflow-hidden
                   px-6
@@ -206,18 +203,17 @@ const Navbar = () => {
                   hover:border-[#5B3DF5]
                   transition
                 "
-              >
-                Login
-
-                <motion.span
-                  animate={{
-                    x: ["-120%", "150%"],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                  className="
+                >
+                  Login
+                  <motion.span
+                    animate={{
+                      x: ["-120%", "150%"],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                    }}
+                    className="
                     absolute
                     inset-0
                     bg-gradient-to-r
@@ -225,20 +221,22 @@ const Navbar = () => {
                     via-indigo-100
                     to-transparent
                   "
-                />
-              </motion.button>
-
+                  />
+                </motion.button>
+              </NavLink>
 
               {/* Get Started */}
-              <motion.button
-                whileHover={{
-                  scale: 1.08,
-                  y: -3,
-                }}
-                whileTap={{
-                  scale: 0.95,
-                }}
-                className="
+              <NavLink to="/register">
+                <motion.button
+                  whileHover={{
+                    scale: 1.08,
+                    y: -3,
+                  }}
+                  whileTap={{
+                    scale: 0.95,
+                  }}
+                  className="
+                  cursor-pointer
                   relative
                   overflow-hidden
                   px-7
@@ -254,21 +252,19 @@ const Navbar = () => {
                   shadow-xl
                   shadow-indigo-300/40
                 "
-              >
-                <span className="relative z-10">
-                  Get Started
-                </span>
+                >
+                  <span className="relative z-10">Get Started</span>
 
-                <motion.span
-                  animate={{
-                    x: ["-100%", "200%"],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="
+                  <motion.span
+                    animate={{
+                      x: ["-100%", "200%"],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="
                     absolute
                     top-0
                     left-0
@@ -278,11 +274,10 @@ const Navbar = () => {
                     skew-x-12
                     blur-md
                   "
-                />
-              </motion.button>
-
+                  />
+                </motion.button>
+              </NavLink>
             </div>
-
 
             {/* Tablet + Mobile Hamburger */}
             <button
@@ -301,17 +296,11 @@ const Navbar = () => {
                 transition
               "
             >
-              {isOpen ? (
-                <HiOutlineX size={26} />
-              ) : (
-                <HiOutlineMenu size={26} />
-              )}
+              {isOpen ? <HiOutlineX size={26} /> : <HiOutlineMenu size={26} />}
             </button>
-
           </div>
         </div>
       </nav>
-
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -349,7 +338,6 @@ const Navbar = () => {
             "
           >
             <div className="p-6 flex flex-col gap-3">
-
               {menuItems.map((item, index) => (
                 <motion.a
                   key={index}
@@ -371,44 +359,96 @@ const Navbar = () => {
                 </motion.a>
               ))}
 
+              {/* Auth Buttons */}
+              <div className="mt-2 pt-4 border-t border-gray-100 space-y-3">
+                {/* Login */}
+                <NavLink
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block"
+                >
+                  <motion.button
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="
+        w-full
+        h-12
+        flex items-center justify-center
+        rounded-xl
+        border border-gray-200
+        bg-white
+        text-gray-700
+        text-sm
+        font-semibold
+        shadow-sm
+        hover:border-[#5B3DF5]
+        hover:text-[#5B3DF5]
+        hover:bg-indigo-50/50
+        transition-all duration-200
+        cursor-pointer
+      "
+                  >
+                    Login
+                  </motion.button>
+                </NavLink>
 
-              <div className="border-t my-4" />
+                {/* Get Started */}
+                <NavLink
+                  to="/register"
+                  onClick={() => setIsOpen(false)}
+                  className="block"
+                >
+                  <motion.button
+                    whileHover={{ y: -2, scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="
+        relative
+        w-full
+        h-12
+        flex items-center justify-center
+        overflow-hidden
+        rounded-xl
+        bg-gradient-to-r
+        from-[#5B3DF5]
+        via-[#7C3AED]
+        to-[#00C2FF]
+        text-white
+        text-sm
+        font-semibold
+        shadow-lg
+        shadow-indigo-300/30
+        transition-all duration-200
+        cursor-pointer
+      "
+                  >
+                    <span className="relative z-10">Get Started</span>
 
-
-              <button
-                className="
-                  py-3
-                  rounded-full
-                  border
-                  font-semibold
-                  hover:border-[#5B3DF5]
-                  hover:text-[#5B3DF5]
-                  transition
-                "
-              >
-                Login
-              </button>
-
-
-              <button
-                className="
-                  py-3
-                  rounded-full
-                  text-white
-                  font-semibold
-                  bg-gradient-to-r
-                  from-[#5B3DF5]
-                  to-[#00C2FF]
-                "
-              >
-                Get Started
-              </button>
-
+                    {/* Shine Effect */}
+                    <motion.span
+                      animate={{ x: ["-120%", "180%"] }}
+                      transition={{
+                        duration: 2.2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="
+          absolute
+          top-0
+          left-0
+          h-full
+          w-16
+          bg-white/25
+          skew-x-12
+          blur-sm
+        "
+                    />
+                  </motion.button>
+                </NavLink>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </>
   );
 };
