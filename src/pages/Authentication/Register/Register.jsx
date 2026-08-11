@@ -20,6 +20,8 @@ import {
 
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const inputBase =
   "w-full rounded-xl border bg-white px-11 py-3.5 text-sm text-[#0F172A] outline-none transition-all duration-200 placeholder:text-[#94A3B8]";
@@ -34,10 +36,10 @@ const jobRoles = [
   "Other",
 ];
 
-export default function Register() {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -168,7 +170,7 @@ export default function Register() {
 
       setIsSuccess(true);
 
-      // toast.success("Registration Successful");
+      toast.success("Registration Successful");
 
       setFormData({
         name: "",
@@ -178,6 +180,9 @@ export default function Register() {
         confirmPassword: "",
         terms: false,
       });
+
+      // Home page redirect
+      navigate("/");
     } catch (err) {
       // Rollback Firebase
 
@@ -195,9 +200,9 @@ export default function Register() {
         err?.response?.data?.message || err?.message || "Registration Failed",
       );
 
-      // toast.error(
-      //   err?.response?.data?.message || err?.message || "Registration Failed",
-      // );
+      toast.error(
+        err?.response?.data?.message || err?.message || "Registration Failed",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -1037,7 +1042,7 @@ export default function Register() {
       </div>
     </main>
   );
-}
+};
 
 function PasswordRule({ valid, text }) {
   return (
@@ -1065,3 +1070,5 @@ function PasswordRule({ valid, text }) {
     </motion.div>
   );
 }
+
+export default Register;

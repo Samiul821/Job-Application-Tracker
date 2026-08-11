@@ -16,6 +16,10 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react";
+import useAuth from "../../../hooks/useAuth";
+import useAxios from "../../../hooks/useAxios";
+import toast from "react-hot-toast";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const inputBase =
   "w-full rounded-xl border bg-white px-11 py-3.5 text-sm text-[#0F172A] outline-none transition-all duration-200 placeholder:text-[#94A3B8]";
@@ -25,6 +29,13 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { signIn, googleSignIn, passwordReset } = useAuth();
+  const axiosInstance = useAxios();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const [formData, setFormData] = useState({
     email: "",
@@ -52,28 +63,67 @@ export default function Login() {
       return;
     }
 
-    if (!formData.email.includes("@")) {
-      setError("Please enter a valid email address.");
-      return;
-    }
+    try {
+      setIsLoading(true);
+      setError("");
 
-    setError("");
-    setIsLoading(true);
+      await signIn(formData.email, formData.password);
 
-    // Replace this with your actual authentication logic
-    setTimeout(() => {
+      toast.success("Login successful!");
+
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error(err);
+
+      switch (err.code) {
+        case "auth/user-not-found":
+          setError("No account found with this email.");
+          toast.error("No account found with this email.");
+          break;
+
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          setError("Incorrect email or password.");
+          toast.error("Incorrect email or password.");
+          break;
+
+        case "auth/too-many-requests":
+          setError("Too many login attempts. Try again later.");
+          toast.error("Too many login attempts.");
+          break;
+
+        case "auth/network-request-failed":
+          setError("Network error. Please check your internet.");
+          toast.error("Network error.");
+          break;
+
+        default:
+          setError("Login failed.");
+          toast.error("Login failed.");
+      }
+    } finally {
       setIsLoading(false);
-
-      // Demo error state:
-      // setError("Invalid email or password.");
-    }, 1600);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    setError("");
+  const handleGoogleLogin = async () => {
+    try {
+      setError("");
+      setIsLoading(true);
 
-    // Add Firebase / Google OAuth logic here
-    console.log("Continue with Google");
+      await googleSignIn();
+
+      toast.success("Login successful!");
+
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error(err);
+
+      setError(err.message);
+      toast.error("Google Sign-In failed.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -115,7 +165,6 @@ export default function Login() {
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#5B3DF5]/10 text-[#5B3DF5]">
                   <Sparkles className="h-3 w-3" />
                 </span>
-
                 Your career, organized.
               </motion.div>
 
@@ -529,9 +578,7 @@ export default function Login() {
                     className="h-4 w-4 cursor-pointer rounded border-[#CBD5E1] accent-[#5B3DF5] focus:ring-[#5B3DF5]/20"
                   />
 
-                  <span className="text-sm text-[#64748B]">
-                    Remember me
-                  </span>
+                  <span className="text-sm text-[#64748B]">Remember me</span>
                 </label>
               </div>
 
@@ -598,7 +645,6 @@ export default function Login() {
                   d="M12 5.98c1.47 0 2.79.5 3.83 1.48l2.87-2.87C16.97 2.98 14.7 2 12 2a10 10 0 0 0-8.95 5.52l3.33 2.59C7.17 7.74 9.39 5.98 12 5.98Z"
                 />
               </svg>
-
               Continue with Google
             </motion.button>
 
