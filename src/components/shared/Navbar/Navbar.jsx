@@ -9,19 +9,28 @@ import {
 } from "react-icons/hi";
 import useAuth from "../../../hooks/useAuth";
 import { MdAutoAwesome } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logOut } = useAuth();
 
-  const menuItems = ["Home", "Features", "Pricing", "About", "Contact"];
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "Features", path: "/features" },
+    { name: "Pricing", path: "/pricing" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
 
-  const onLogout = () => {
-    logOut()
-      .then(() => {
-        console.log("logout");
-      })
-      .catch(() => toast.error("Logout failed!"));
+  const onLogout = async () => {
+    try {
+      await logOut();
+      toast.success("Logout successful!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Logout failed!");
+    }
   };
 
   return (
@@ -105,32 +114,22 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-8">
-              {menuItems.map((item, index) => (
-                <motion.a
-                  key={index}
-                  href="#"
-                  whileHover={{ y: -3 }}
-                  className="
-                    relative
-                    text-sm
-                    font-medium
-                    text-gray-600
-                    hover:text-[#5B3DF5]
-                    transition
-                    after:absolute
-                    after:left-0
-                    after:-bottom-2
-                    after:h-[2px]
-                    after:w-0
-                    after:bg-gradient-to-r
-                    after:from-[#5B3DF5]
-                    after:to-[#00C2FF]
-                    after:transition-all
-                    hover:after:w-full
-                  "
-                >
-                  {item}
-                </motion.a>
+              {menuItems.map((item) => (
+                <NavLink key={item.path} to={item.path}>
+                  {({ isActive }) => (
+                    <motion.span
+                      whileHover={{ y: -3 }}
+                      className={`relative text-sm font-medium transition after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:bg-gradient-to-r after:from-[#5B3DF5] after:to-[#00C2FF] after:transition-all
+            ${
+              isActive
+                ? "text-[#5B3DF5] after:w-full"
+                : "text-gray-600 hover:text-[#5B3DF5] after:w-0 hover:after:w-full"
+            }`}
+                    >
+                      {item.name}
+                    </motion.span>
+                  )}
+                </NavLink>
               ))}
             </div>
 
@@ -334,25 +333,26 @@ const Navbar = () => {
             "
           >
             <div className="p-6 flex flex-col gap-3">
-              {menuItems.map((item, index) => (
-                <motion.a
-                  key={index}
-                  href="#"
-                  whileHover={{ x: 8 }}
+              {menuItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className="
-                    px-4
-                    py-3
-                    rounded-xl
-                    text-gray-700
-                    font-medium
-                    hover:bg-indigo-50
-                    hover:text-[#5B3DF5]
-                    transition
-                  "
                 >
-                  {item}
-                </motion.a>
+                  {({ isActive }) => (
+                    <motion.div
+                      whileHover={{ x: 8 }}
+                      className={`px-4 py-3 rounded-xl font-medium transition
+          ${
+            isActive
+              ? "bg-indigo-50 text-[#5B3DF5]"
+              : "text-gray-700 hover:bg-indigo-50 hover:text-[#5B3DF5]"
+          }`}
+                    >
+                      {item.name}
+                    </motion.div>
+                  )}
+                </NavLink>
               ))}
 
               {/* Auth Buttons */}
