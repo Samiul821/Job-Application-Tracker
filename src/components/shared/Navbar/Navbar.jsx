@@ -7,11 +7,12 @@ import {
   HiOutlineX,
   HiOutlineMoon,
 } from "react-icons/hi";
-
+import useAuth from "../../../hooks/useAuth";
 import { MdAutoAwesome } from "react-icons/md";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logOut } = useAuth();
 
   const menuItems = [
     "Home",
@@ -21,6 +22,14 @@ const Navbar = () => {
     "About",
     "Contact",
   ];
+
+  const onLogout = () => {
+    logOut()
+      .then(() => {
+        console.log("logout");
+      })
+      .catch(() => toast.error("Logout failed!"));
+  };
 
   return (
     <>
@@ -175,108 +184,102 @@ const Navbar = () => {
                 <HiOutlineMoon size={20} />
               </motion.button>
 
-              {/* Login */}
-              <NavLink to="/login">
-                {" "}
-                <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    y: -2,
-                  }}
-                  whileTap={{
-                    scale: 0.95,
-                  }}
-                  className="
-                  cursor-pointer
-                  relative
-                  overflow-hidden
-                  px-6
-                  py-2.5
-                  rounded-full
-                  border
-                  border-gray-200
-                  bg-white
-                  font-semibold
-                  text-sm
-                  text-gray-700
-                  hover:text-[#5B3DF5]
-                  hover:border-[#5B3DF5]
-                  transition
-                "
-                >
-                  Login
-                  <motion.span
-                    animate={{
-                      x: ["-120%", "150%"],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                    }}
-                    className="
-                    absolute
-                    inset-0
-                    bg-gradient-to-r
-                    from-transparent
-                    via-indigo-100
-                    to-transparent
-                  "
-                  />
-                </motion.button>
-              </NavLink>
+              {user ? (
+                <>
+                  <NavLink to="/dashboard">
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="
+          cursor-pointer
+          px-6
+          py-2.5
+          rounded-full
+          border
+          border-[#5B3DF5]
+          text-[#5B3DF5]
+          font-semibold
+          text-sm
+          hover:bg-[#5B3DF5]
+          hover:text-white
+          transition
+        "
+                    >
+                      Dashboard
+                    </motion.button>
+                  </NavLink>
 
-              {/* Get Started */}
-              <NavLink to="/register">
-                <motion.button
-                  whileHover={{
-                    scale: 1.08,
-                    y: -3,
-                  }}
-                  whileTap={{
-                    scale: 0.95,
-                  }}
-                  className="
-                  cursor-pointer
-                  relative
-                  overflow-hidden
-                  px-7
-                  py-3
-                  rounded-full
-                  text-white
-                  font-semibold
-                  text-sm
-                  bg-gradient-to-r
-                  from-[#5B3DF5]
-                  via-[#7C3AED]
-                  to-[#00C2FF]
-                  shadow-xl
-                  shadow-indigo-300/40
-                "
-                >
-                  <span className="relative z-10">Get Started</span>
-
-                  <motion.span
-                    animate={{
-                      x: ["-100%", "200%"],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
+                  <motion.button
+                    onClick={onLogout}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     className="
-                    absolute
-                    top-0
-                    left-0
-                    w-20
-                    h-full
-                    bg-white/30
-                    skew-x-12
-                    blur-md
-                  "
-                  />
-                </motion.button>
-              </NavLink>
+        cursor-pointer
+        px-6
+        py-2.5
+        rounded-full
+        bg-red-500
+        text-white
+        font-semibold
+        text-sm
+        hover:bg-red-600
+        transition
+      "
+                  >
+                    Logout
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <NavLink to="/login">
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="
+          cursor-pointer
+          relative
+          overflow-hidden
+          px-6
+          py-2.5
+          rounded-full
+          border
+          border-gray-200
+          bg-white
+          font-semibold
+          text-sm
+          text-gray-700
+          hover:text-[#5B3DF5]
+          hover:border-[#5B3DF5]
+          transition
+        "
+                    >
+                      Login
+                    </motion.button>
+                  </NavLink>
+
+                  <NavLink to="/register">
+                    <motion.button
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="
+          cursor-pointer
+          px-7
+          py-3
+          rounded-full
+          text-white
+          font-semibold
+          text-sm
+          bg-gradient-to-r
+          from-[#5B3DF5]
+          via-[#7C3AED]
+          to-[#00C2FF]
+        "
+                    >
+                      Get Started
+                    </motion.button>
+                  </NavLink>
+                </>
+              )}
             </div>
 
             {/* Tablet + Mobile Hamburger */}
@@ -360,91 +363,56 @@ const Navbar = () => {
               ))}
 
               {/* Auth Buttons */}
-              <div className="mt-2 pt-4 border-t border-gray-100 space-y-3">
-                {/* Login */}
-                <NavLink
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="block"
-                >
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="
-        w-full
-        h-12
-        flex items-center justify-center
-        rounded-xl
-        border border-gray-200
-        bg-white
-        text-gray-700
-        text-sm
-        font-semibold
-        shadow-sm
-        hover:border-[#5B3DF5]
-        hover:text-[#5B3DF5]
-        hover:bg-indigo-50/50
-        transition-all duration-200
-        cursor-pointer
-      "
+              {user ? (
+                <>
+                  <NavLink
+                    to="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="block"
                   >
-                    Login
-                  </motion.button>
-                </NavLink>
-
-                {/* Get Started */}
-                <NavLink
-                  to="/register"
-                  onClick={() => setIsOpen(false)}
-                  className="block"
-                >
-                  <motion.button
-                    whileHover={{ y: -2, scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="
-        relative
-        w-full
-        h-12
-        flex items-center justify-center
-        overflow-hidden
-        rounded-xl
-        bg-gradient-to-r
-        from-[#5B3DF5]
-        via-[#7C3AED]
-        to-[#00C2FF]
-        text-white
-        text-sm
-        font-semibold
-        shadow-lg
-        shadow-indigo-300/30
-        transition-all duration-200
-        cursor-pointer
-      "
-                  >
-                    <span className="relative z-10">Get Started</span>
-
-                    {/* Shine Effect */}
-                    <motion.span
-                      animate={{ x: ["-120%", "180%"] }}
-                      transition={{
-                        duration: 2.2,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
+                    <button
                       className="
-          absolute
-          top-0
-          left-0
-          h-full
-          w-16
-          bg-white/25
-          skew-x-12
-          blur-sm
+          w-full
+          h-12
+          rounded-xl
+          border
+          border-[#5B3DF5]
+          text-[#5B3DF5]
+          font-semibold
+          hover:bg-[#5B3DF5]
+          hover:text-white
+          transition
         "
-                    />
-                  </motion.button>
-                </NavLink>
-              </div>
+                    >
+                      Dashboard
+                    </button>
+                  </NavLink>
+
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setIsOpen(false);
+                    }}
+                    className="
+        w-full
+        h-12
+        rounded-xl
+        bg-red-500
+        text-white
+        font-semibold
+        hover:bg-red-600
+        transition
+      "
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Login Button */}
+                  {/* Get Started Button */}
+                </>
+              )}
             </div>
           </motion.div>
         )}
