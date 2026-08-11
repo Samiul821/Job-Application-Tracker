@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   GoogleAuthProvider,
   onAuthStateChanged,
   sendPasswordResetEmail,
@@ -9,45 +10,51 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+
 import { auth } from "../../Firebase/firebase.config";
 import { AuthContext } from "./AuthContext";
 
 const googleProvider = new GoogleAuthProvider();
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(user);
 
-  //   create User
+  // Create User
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // update Profile
-  const updateProfile = (userData) => {
-    return updateProfile(auth.currentUser, userData);
+  // Update Profile
+  const updateUserProfile = (userInfo) => {
+    return updateProfile(auth.currentUser, userInfo);
   };
 
-  //   sign in
+  // Remove Firebase User (Rollback)
+  const removeFirebaseUser = async (user) => {
+    if (!user) return;
+    return await deleteUser(user);
+  };
+
+  // Login
   const signIn = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  //   password reset
-  const passwordReset = (email) => {
-    setLoading(true);
-    return sendPasswordResetEmail(auth, email);
-  };
-
-  // Google sign in
+  // Google Login
   const googleSignIn = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
 
-  // logout
+  // Password Reset
+  const passwordReset = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
+  // Logout
   const logOut = () => {
     setLoading(true);
     return signOut(auth);
@@ -59,20 +66,18 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
   const authInfo = {
     user,
-    setUser,
     loading,
     createUser,
-    updateProfile,
+    updateUserProfile,
+    removeFirebaseUser,
     signIn,
-    passwordReset,
     googleSignIn,
+    passwordReset,
     logOut,
   };
 

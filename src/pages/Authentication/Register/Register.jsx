@@ -18,6 +18,9 @@ import {
   X,
 } from "lucide-react";
 
+import useAuth from "../../../hooks/useAuth";
+import useAxios from "../../../hooks/useAxios";
+
 const inputBase =
   "w-full rounded-xl border bg-white px-11 py-3.5 text-sm text-[#0F172A] outline-none transition-all duration-200 placeholder:text-[#94A3B8]";
 
@@ -38,6 +41,12 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const { createUser, updateUserProfile, removeFirebaseUser, googleSignIn } =
+    useAuth();
+
+  // Axios custom hook
+  const axiosInstance = useAxios();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -96,55 +105,116 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.role ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      setError("Please complete all required fields.");
-      return;
+    setError("");
+    setIsSuccess(false);
+
+    // Validation
+    if (!formData.name) {
+      return setError("Name is required");
     }
 
-    if (!formData.email.includes("@")) {
-      setError("Please enter a valid email address.");
-      return;
+    if (!formData.email) {
+      return setError("Email is required");
     }
 
-    if (passwordScore < 3) {
-      setError("Please create a stronger password.");
-      return;
+    if (!formData.role) {
+      return setError("Please select a job role");
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+      return setError("Passwords do not match");
     }
 
     if (!formData.terms) {
-      setError("Please accept the Terms of Service and Privacy Policy.");
-      return;
+      return setError("Please accept Terms & Conditions");
     }
 
-    setError("");
-    setIsLoading(true);
+    let firebaseUser = null;
 
-    // Replace this with your actual registration logic.
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      setIsLoading(true);
+
+      // 1. Create Firebase User
+
+      const result = await createUser(formData.email, formData.password);
+
+      firebaseUser = result.user;
+
+      // 2. Update Firebase Profile
+
+      await updateUserProfile({
+        displayName: formData.name,
+      });
+
+      // 3. Prepare MongoDB Data
+
+      const userInfo = {
+        uid: firebaseUser.uid,
+        name: formData.name,
+        email: formData.email,
+        jobRole: formData.role,
+        photoURL: firebaseUser.photoURL || "",
+      };
+
+      // 4. Save MongoDB
+
+      const { data } = await axiosInstance.post("/users", userInfo);
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      // Success
+
       setIsSuccess(true);
 
-      // Example:
-      // navigate("/dashboard");
-    }, 1600);
+      // toast.success("Registration Successful");
+
+      setFormData({
+        name: "",
+        email: "",
+        role: "",
+        password: "",
+        confirmPassword: "",
+        terms: false,
+      });
+    } catch (err) {
+      // Rollback Firebase
+
+      if (firebaseUser) {
+        try {
+          await removeFirebaseUser(firebaseUser);
+        } catch (rollbackError) {
+          console.log("Rollback Failed", rollbackError);
+        }
+      }
+
+      console.log(err);
+
+      setError(
+        err?.response?.data?.message || err?.message || "Registration Failed",
+      );
+
+      // toast.error(
+      //   err?.response?.data?.message || err?.message || "Registration Failed",
+      // );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleRegister = () => {
-    setError("");
+    googleSignIn()
+      .then(async (result) => {
+        console.log("Google Register Successful:", result.user);
 
-    // Add Firebase / Google OAuth logic here.
-    console.log("Continue with Google");
+        // Google user backend integration will be added later.
+      })
+      .catch((error) => {
+        console.error("Google Register Error:", error);
+
+        setError("Google registration failed. Please try again.");
+      });
   };
 
   return (
@@ -153,6 +223,7 @@ export default function Register() {
         {/* =====================================================
             LEFT VISUAL SECTION
         ====================================================== */}
+
         <section className="relative hidden overflow-hidden lg:flex">
           {/* Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#F8F7FF] via-white to-[#EEF9FF]" />
@@ -433,6 +504,7 @@ export default function Register() {
         {/* =====================================================
             RIGHT REGISTRATION SECTION
         ====================================================== */}
+
         <section className="relative flex min-h-screen items-center justify-center px-5 py-8 sm:px-8 lg:px-12 xl:px-20">
           {/* Mobile ambient blobs */}
           <div
@@ -475,6 +547,7 @@ export default function Register() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
+
                   <path
                     d="M5 18.5h14M9.5 12h5M9.5 15h5"
                     stroke="currentColor"
@@ -512,6 +585,7 @@ export default function Register() {
                 >
                   <div className="flex items-start gap-2.5 rounded-xl border border-red-100 bg-red-50 px-3.5 py-3 text-sm text-red-600">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+
                     <span>{error}</span>
                   </div>
                 </motion.div>
@@ -529,6 +603,7 @@ export default function Register() {
                 >
                   <div className="flex items-start gap-2.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3.5 py-3 text-sm text-emerald-600">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+
                     <span>
                       Account created successfully. Welcome to JobTrack!
                     </span>
@@ -784,9 +859,7 @@ export default function Register() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword((prev) => !prev)
-                    }
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#94A3B8] transition hover:text-[#475569] focus:outline-none focus:ring-2 focus:ring-[#5B3DF5]/20"
                     aria-label={
                       showConfirmPassword
@@ -930,20 +1003,22 @@ export default function Register() {
                   fill="#4285F4"
                   d="M21.6 12.23c0-.7-.06-1.38-.18-2.03H12v3.84h5.38a4.6 4.6 0 0 1-1.99 3.02v2.51h3.22c1.88-1.73 2.99-4.28 2.99-7.34Z"
                 />
+
                 <path
                   fill="#34A853"
                   d="M12 22c2.7 0 4.97-.9 6.62-2.43l-3.22-2.51c-.9.6-2.05.96-3.4.96-2.61 0-4.83-1.76-5.62-4.13H3.05v2.59A10 10 0 0 0 12 22Z"
                 />
+
                 <path
                   fill="#FBBC05"
                   d="M6.38 13.89A6.02 6.02 0 0 1 6.07 12c0-.66.11-1.3.31-1.89V7.52H3.05A10 10 0 0 0 2 12c0 1.61.39 3.14 1.05 4.48l3.33-2.59Z"
                 />
+
                 <path
                   fill="#EA4335"
                   d="M12 5.98c1.47 0 2.79.5 3.83 1.48l2.87-2.87C16.97 2.98 14.7 2 12 2a10 10 0 0 0-8.95 5.52l3.33 2.59C7.17 7.74 9.39 5.98 12 5.98Z"
                 />
               </svg>
-
               Continue with Google
             </motion.button>
 
@@ -963,7 +1038,6 @@ export default function Register() {
     </main>
   );
 }
-
 
 function PasswordRule({ valid, text }) {
   return (
