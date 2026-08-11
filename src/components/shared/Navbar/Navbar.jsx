@@ -14,14 +14,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logOut } = useAuth();
 
-  const menuItems = [
-    "Home",
-    "Features",
-    "Dashboard",
-    "Pricing",
-    "About",
-    "Contact",
-  ];
+  const menuItems = ["Home", "Features", "Pricing", "About", "Contact"];
 
   const onLogout = () => {
     logOut()
@@ -409,8 +402,51 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  {/* Login Button */}
-                  {/* Get Started Button */}
+                  <div className="mt-2 pt-4 border-t border-gray-100 space-y-3">
+                    {" "}
+                    {/* Login */}{" "}
+                    <NavLink
+                      to="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="block"
+                    >
+                      {" "}
+                      <motion.button
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className=" w-full h-12 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-semibold shadow-sm hover:border-[#5B3DF5] hover:text-[#5B3DF5] hover:bg-indigo-50/50 transition-all duration-200 cursor-pointer "
+                      >
+                        {" "}
+                        Login{" "}
+                      </motion.button>{" "}
+                    </NavLink>{" "}
+                    {/* Get Started */}{" "}
+                    <NavLink
+                      to="/register"
+                      onClick={() => setIsOpen(false)}
+                      className="block"
+                    >
+                      {" "}
+                      <motion.button
+                        whileHover={{ y: -2, scale: 1.01 }}
+                        whileTap={{ scale: 0.98 }}
+                        className=" relative w-full h-12 flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-[#5B3DF5] via-[#7C3AED] to-[#00C2FF] text-white text-sm font-semibold shadow-lg shadow-indigo-300/30 transition-all duration-200 cursor-pointer "
+                      >
+                        {" "}
+                        <span className="relative z-10">Get Started</span>{" "}
+                        {/* Shine Effect */}{" "}
+                        <motion.span
+                          animate={{ x: ["-120%", "180%"] }}
+                          transition={{
+                            duration: 2.2,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          className=" absolute top-0 left-0 h-full w-16 bg-white/25 skew-x-12 blur-sm "
+                        />{" "}
+                      </motion.button>{" "}
+                    </NavLink>{" "}
+                  </div>
                 </>
               )}
             </div>
